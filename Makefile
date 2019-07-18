@@ -2,6 +2,7 @@ CPP = /usr/bin/cpp -P -undef -Wundef -std=c99 -nostdinc -Wtrigraphs -fdollars-in
 
 SRC = $(shell find web/assets -maxdepth 1 -type f)
 DST = $(patsubst %.scss,%.css,$(patsubst %.ts,%.js,$(subst web/assets,.build/assets,$(SRC))))
+version := "v0.0.1"
 
 ALL: web/bindata.go
 
@@ -16,7 +17,7 @@ ALL: web/bindata.go
 
 .build/assets/%.js: web/assets/%.ts
 	$(eval TMP := $(shell mktemp))
-	tsc --out $(TMP) $< 
+	tsc --out $(TMP) $<
 	closure-compiler --js $(TMP) --js_output_file $@
 	rm -f $(TMP)
 
@@ -28,3 +29,8 @@ web/bindata.go: .build/bin/go-bindata .build/assets $(DST)
 
 clean:
 	rm -rf .build/assets web/bindata.go
+
+releasepush:
+	docker build -t buzzfeed/golinks:$(version) .
+	docker push buzzfeed/golinks:$(version)
+	docker push buzzfeed/golinks:latest

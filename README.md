@@ -1,52 +1,35 @@
 # A "go" short-link service
 
-## Background
-The first time I encountered "go" links was at Google. Anyone on the corporate
-network could register a URL shortcut and it would redirect the user to the
-appropriate page. So for instance, if you wanted to find out more about BigTable,
-you simply directed your browser at http://go/bigtable and you would be redirected to
-something about the BigTable data storage system. I was later told that the
-first go service at Google was written by [Benjamin Staffin](https://www.linkedin.com/in/benjaminstaffin)
-to end the never-ending stream of requests for internal CNAME entries. He
-described it as AOL keywords for the corporate network. These days if you go to
-any reasonably sized company, you are likely to find a similar system. Etsy made
-one after seeing that Twitter had one ... it's a contagious and useful little
-tool. So contagious, in fact, that many former Googlers that I know have built
-or contributed to a similar system post-Google. I am no different, this is my
-"go" link service.
+_This service is a fork of [Kelly Norton's golinks implementation](https://github.com/kellegous/go)_
 
-One slight difference between this go service and Google's is that this one is also
-capable of generating short links for you.
+## Background
+
+From Kelly's description:
+
+> The first time I encountered "go" links was at Google. Anyone on the corporate network could register a URL shortcut and it would redirect the user to the appropriate page. So for instance, if you wanted to find out more about BigTable, you simply directed your browser at http://go/bigtable and you would be redirected to something about the BigTable data storage system. I was later told that the first go service at Google was written by [Benjamin Staffin](https://www.linkedin.com/in/benjaminstaffin) to end the never-ending stream of requests for internal CNAME entries. He described it as AOL keywords for the corporate network. These days if you go to any reasonably sized company, you are likely to find a similar system. Etsy made one after seeing that Twitter had one ... it's a contagious and useful little tool. So contagious, in fact, that many former Googlers that I know have built or contributed to a similar system post-Google. I am no different, this is my "go" link service.
 
 ## Installation
-This tool is written in Go (ironically) and can be easily installed  and started
-with the following commands.
 
-```
-GOPATH=`pwd` go install github.com/kellegous/go
-bin/go
-```
+We use this tool as a Docker image which can be found [here](https://cloud.docker.com/u/buzzfeed/repository/docker/buzzfeed/golinks/tags).
 
-By default, the service will put all of its data in the directory `data` and will
-listen to requests on the port `8067`. Both of these, however, are easily configured
-using the `--data=/path/to/data` and `--addr=:80` command line flags.
+## Setup
 
-## DNS Setup
-To get the most benefit from the service, you should setup a DNS entry on your
-local network, `go.corp.mycompany.com`. Make sure that corp.mycompany.com is in
-the search domains for each user on the network. This is usually easily accomplished
-by configuring your DHCP server. Now, simply typing "go" into your browser should
-take you to the service, where you can register shortcuts. Obviously, those
-shortcuts will also be available by typing "go/shortcut".
+There are several ways you can setup the `go` domain. If you are in a VPN, this will be relatively straightforward.
+
+Fortunately or unfortunately (depends on how you look at it) for us, we don't use a VPN. We use an internal service for auth based on Beyond Corp's zero trust policy called [SSO](https://github.com/buzzfeed/sso/). In order for us to set this up, we had to add a search domain to  `resolv.conf` across company computers (accomplished using jamf).
 
 ## Using the Service
+
 Once you have it all setup, using it is pretty straight-forward.
 
-#### Create a new shortcut
+### Create a new shortcut
+
 Type `go/edit/my-shortcut` and enter the URL.
 
-#### Visit a shortcut
+### Visit a shortcut
+
 Type `go/my-shortcut` and you'll be redirected to the URL.
 
-#### Shorten a URL
+### Shorten a URL
+
 Type `go` and enter the URL.
